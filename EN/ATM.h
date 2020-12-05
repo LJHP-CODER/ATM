@@ -36,7 +36,7 @@ struct money_manage mm; // 구조체 money_manage를 main함수에서 사용할수 있도록 mm
 struct card_manage cm;
 
 void draw_main();
-void ran();
+void Create_Cardname();
 
 void login();
 void signup();
