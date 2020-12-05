@@ -1,12 +1,12 @@
-#include "ATM.h" //위에 추가해야할 변수나 해더파일을 추가한 "ATM.h" 헤더파일을 코드에 포함한다.
+#include "ATM.h"
 
-char input_ID[20]; //ID값을 임시 입력받는 변수
-char input_PW[20]; //PW값을 임시 입력받는 변수
-char choice; //메인 메뉴에 있는 명령선택 변수
+char input_ID[20];
+char input_PW[20];
+char choice;
 
-char filename[50] = ""; //파일 입출력에 필요한 파일이름 변수
+char filename[50] = "";
 
-void Create_Cardname(){ //카드이름을 랜덤으로 단어를 뽑아서 설정해준다.
+void Create_Cardname(){
 	int i;
 
 	for (i = 0; i < 5; i++){
@@ -15,21 +15,20 @@ void Create_Cardname(){ //카드이름을 랜덤으로 단어를 뽑아서 설정해준다.
 }
 
 int main(){
-	system("title ATM Machine"); //제목을 ATM Machine로 설정한다.
-	system("mode con: cols=63 lines=19"); //cols(가로)를 47, lines(세로)를 12로 설정한다.
-	system("color 1F"); //색깔을 1F로 설정한다.
+	system("title ATM Machine");
+	system("mode con: cols=63 lines=19");
+	system("color 1F");
 
-	m.save = 0; //m(member 구조체)에 있는 save변수(아이디 저장 설정값)을 0(저장하지 않는다)로 설정한다.
-	mm.Bank_cash = 0; //mm(money_manage 구조체)에 있는 Bank_cash변수(은행에 있는 돈)을 0으로 초기화한다.
+	m.save = 0;
+	mm.Bank_cash = 0;
 
-	srand(time(NULL)); //시드값은 time(현재 시간)을 갖고 어느 수식을 통해 매시간마다 바뀌는 난수를 뽑게한다.
-	cm.Card_num = abs(rand() * 1000000); //절댓값으로 0부터 1000000중에서 랜덤 숫자를 뽑아 카드번호로 설정한다.
-	cm.c = 0; //카드정보(카드번호, 캐시)를 보여줄지 정하는 변수를 0(보여주지 않는다)로 초기화한다.
-	Create_Cardname();
+	srand(time(NULL));
+	cm.c = 0; 
+	
 
 	while (1){
 		draw_main();
-		choice = _getch(); //어느 명령을 실행 할건지 정한다.
+		choice = _getch();
 		//------------------------Login------------------------
 		if (choice == 'l') {
 			cls;
@@ -96,7 +95,6 @@ int main(){
 			cls;
 
 			choice_error();
-			break;
 		}
 	}
 }
@@ -129,27 +127,27 @@ void login(){
 	printf("\t\t          Input PW: ");
 	scanf("%s", input_PW);
 
-	if (!strcmp(input_ID, m.ID) && !strcmp(input_PW, m.PW)){ //입력 받은 모든 값들을 m구조체에 있는 (ID, PW)와 비교 한다.
+	if (!strcmp(input_ID, m.ID) && !strcmp(input_PW, m.PW)){
 		cls;
 		printf("\t\t         [Success]\n");
 		printf("\t\t (I) ID Save   (M) Main Menu");
 
 		while (1) {
-			if (_kbhit()) { //키보드 입력 감지
-				m.saveID = _getch(); //m구조체에 있는 saveID변수로 아이디를 저장할 것인지 아닌지 결정한다.
+			if (_kbhit()) {
+				m.saveID = _getch();
 
 				switch (m.saveID) {
 
-				case 'i':  //i키를 눌렀을때
+				case 'i':
 					cls;
 
-					m.save = 1; //save를 1로 바꿔 아이디를 저장한다.
+					m.save = 1;
 					return;
 				
-				case 'm': //m키를 눌렀을때
+				case 'm':
 					cls;
 
-					m.save = 0; //save를 0로 넣어 저장하지 않는다.
+					m.save = 0;
 					return;
 				}
 			}
@@ -158,8 +156,8 @@ void login(){
 
 	else{
 		cls;
-		printf("\t\t      [Error]\n");
-		printf("\t\t    Login Error");
+		printf("\t\t          [Error]\n");
+		printf("\t\t        Login Error");
 		m.save = 0;
 
 		pause;
@@ -189,7 +187,7 @@ void signup(){
 	cm.cash = m.input_cash;
 
 	cls;
-	if (m.name == "" || m.ID == "" || m.PW == ""){ //입력한 값이 하나라도 없으면 회원 가입을 못하게 한다.
+	if (m.name == "" || m.ID == "" || m.PW == ""){
 		printf("\t\t          [Error]\n");
 		printf("\t\t    Create Account Error");
 		pause;
@@ -197,7 +195,6 @@ void signup(){
 
 		return;
 	}
-	//아니면 회원 가입을 성공 시킨다.
 
 	printf("\t\t           [Success]\n");
 	printf("\t\t     Create Account Success");
@@ -208,36 +205,36 @@ void signup(){
 }
 //------------------------Deposit------------------------
 void deposit(){
-	if (m.save == 1){ //save변수 1(아이디저장)일때 저절로 입금 화면을 보여준다.
+	if (m.save == 1){
 	plus:
 		printf("\t\t       [Desposit Page]\n");
 		printf("\t\t       Cash: %d\n", m.input_cash);
 		printf("\t\t       Input Cash: ");
 		scanf("%d", &mm.input_money);
 
-		if (mm.input_money > m.input_cash){ //만약 입력한 돈이 현금보다 클때 돈이 충분하지 않다고 말해준다.
+		if (mm.input_money > m.input_cash){
 			cls;
 
-			printf("\t\t         [Error]\n");
-			printf("\t\t     Not Enough Money");
+			printf("\t\t           [Error]\n");
+			printf("\t\t       Not Enough Money");
 			pause;
 			cls;
 
 			return;
 		}
 
-		m.input_cash -= mm.input_money; //현금에서 입력한 값을 빼고
-		mm.Bank_cash += mm.input_money; //그 뺀값을 은행돈에 더한다.
+		m.input_cash -= mm.input_money; 
+		mm.Bank_cash += mm.input_money; 
 
 		cls;
-		printf("\t\t       [Bank Money]: %lld\n", mm.Bank_cash); //그리고 그 더한값을 출력한다.
+		printf("\t\t       [Bank Money]: %lld\n", mm.Bank_cash); 
 		pause;
 		cls;
 
 		return;
 	}
 
-	else{ //아이디 저장이 아닐때
+	else{ 
 		printf("\t\t       [Deposit Login Page]\n");
 		printf("\t\t         Input ID: ");
 		scanf("%s", input_ID);
@@ -265,7 +262,7 @@ void deposit(){
 //------------------------Withdraw------------------------
 void withdraw(){
 
-	if (m.save == 1){ //m에 save변수가 1(아이디 저장)일때 저절로 출금 화면을 보여 준다.
+	if (m.save == 1){
 	minus:
 		printf("\t\t       [Withdraw Page]\n");
 		printf("\t\t       [Bank Money]: %lld\n", mm.Bank_cash);
@@ -273,16 +270,16 @@ void withdraw(){
 		scanf("%d", &mm.input_money);
 
 		cls;
-		if (mm.input_money > mm.Bank_cash){ //만약 입력한 값이 은행에 있는돈 보다 크면 은행에 돈이 충분하지 않다고 말해준다.
-			printf("\t\t          [Error]\n");
-			printf("\t\t   Not Enough Bank Money");
+		if (mm.input_money > mm.Bank_cash){
+			printf("\t\t            [Error]\n");
+			printf("\t\t     Not Enough Bank Money");
 			pause;
 
 			cls;
 			return;
 		}
-		mm.Bank_cash -= mm.input_money; //은행에 있는돈 에서 입력받은 값을 뺀다.
-		m.input_cash += mm.input_money; //그리고 현금에 입력받은 값을 더한다.
+		mm.Bank_cash -= mm.input_money;
+		m.input_cash += mm.input_money; 
 
 		printf("\t\t       [Your Cash]: %d\n", m.input_cash);
 		pause;
@@ -291,7 +288,6 @@ void withdraw(){
 
 		return;
 	}
-	//m에 save변수가 0(아이디 저장 하지않는다)일때
 	else{
 		printf("\t\t     [Withdraw Login Page]\n");
 		printf("\t\t       Input ID: ");
@@ -306,8 +302,8 @@ void withdraw(){
 		}
 
 		else{
-			printf("\t\t          [Error]\n");
-			printf("\t\t        Login Error");
+			printf("\t\t            [Error]\n");
+			printf("\t\t          Login Error");
 			pause;
 
 			cls;
@@ -327,8 +323,8 @@ void ID_load(){
 
 	if (!strcmp("", filename)){
 		cls;
-		printf("\t\t          [Error]\n");
-		printf("\t\t      File Open Error");
+		printf("\t\t            [Error]\n");
+		printf("\t\t        File Open Error");
 		pause;
 
 		cls;
@@ -350,38 +346,34 @@ void ID_load(){
 		}
 
 		else{
-			fscanf(f, "%s %s %s %lld %d", m.name, m.ID, m.PW, &mm.Bank_cash, &m.saveID);
+			int tmp;
+			fscanf(f, "%s %s %s %lld %d", m.name, m.ID, m.PW, &cm.cash, &m.save);
 			fclose(f);
 
 			cls;
-			printf("\t\t         [Auth ID]\n");
-			printf("\t\t         Input PW: ");
+			printf("\t\t          [Auth ID]\n");
+			printf("\t\t          Input PW: ");
 			scanf("%s", input_PW);
 
 			if (!strcmp(input_PW, m.PW)){
 				cls;
-				printf("\t\t         [Success]\n");
-				printf("\t\t      Load ID Success");
+				printf("\t\t          [Success]\n");
+				printf("\t\t       Load ID Success");
 
 				pause;
 				cls;
-				printf("\t\t          [Result]\n");
-				printf("\t\t         Name: %s\n", m.name);
-				printf("\t\t         ID: %s\n", m.ID);
-				printf("\t\t         PW: %s\n", m.PW);
-				printf("\t\t         Bank Money: %lld\n", mm.Bank_cash);
+				tmp = m.save;
+				m.save = 1;
+				check();
 
-
-				pause;
-				cls;
-
+				m.save = tmp;
 				return;
 			}
 
 			else{
 				cls;
-				printf("\t\t          [Error]\n");
-				printf("\t\t         Auth Error");
+				printf("\t\t            [Error]\n");
+				printf("\t\t           Auth Error");
 
 				pause;
 				m.name[20] = "";
@@ -414,8 +406,8 @@ void Remember_data(){
 		}
 
 		else{
-			printf("\t\t          [Error]\n");
-			printf("\t\t        Login Error");
+			printf("\t\t            [Error]\n");
+			printf("\t\t          Login Error");
 			pause;
 
 			cls;
@@ -429,8 +421,8 @@ void save(){
 	fp = fopen(m.name, "wt");
 	if (fp == NULL){
 
-		printf("\t\t          [Error]\n");
-		printf("\t\t       Save Data Error");
+		printf("\t\t           [Error]\n");
+		printf("\t\t        Save Data Error");
 
 		pause;
 		cls;
@@ -442,15 +434,15 @@ void save(){
 	fprintf(fp, "%s ", m.name);
 	fprintf(fp, "%s ", m.ID);
 	fprintf(fp, "%s ", m.PW);
-	fprintf(fp, "%lld ", mm.Bank_cash);
-	fprintf(fp, "%d", m.saveID);
+	fprintf(fp, "%ld ", cm.cash);
+	fprintf(fp, "%d", m.save);
 
 	fclose(fp);
 
 	chmod(m.name, 000);
 
-	printf("\t\t        [Save Data]\n");
-	printf("\t\t     Save Data Success");
+	printf("\t\t          [Save Data]\n");
+	printf("\t\t       Save Data Success");
 
 	pause;
 	cls;
@@ -463,9 +455,9 @@ void add_cash(){
 
 	if (m.save == 1){
 	add:
-		printf("\t\t       [Add Cash]\n");
-		printf("\t\t   Range: [0 ~ 1000000]\n");
-		printf("\t\t   Input Cash: ");
+		printf("\t\t         [Add Cash]\n");
+		printf("\t\t     Range: [0 ~ 1000000]\n");
+		printf("\t\t     Input Cash: ");
 		scanf("%d", &mm.input_add_cash);
 
 		if (mm.input_add_cash > 1000000){
@@ -478,7 +470,7 @@ void add_cash(){
 			cls;
 			return;
 		}
-		cm.cash = mm.input_add_cash;
+		cm.cash += mm.input_add_cash;
 
 		cls;
 		printf("\t\t       [Your Cash]: %d", m.input_cash);
@@ -503,8 +495,8 @@ void add_cash(){
 		}
 
 		else{
-			printf("\t\t          [Error]\n");
-			printf("\t\t        Login Error");
+			printf("\t\t            [Error]\n");
+			printf("\t\t          Login Error");
 			pause;
 
 			cls;
@@ -535,18 +527,20 @@ void Get_card(){
 	
 	else{
 		cls;
-		printf("\t\t          [Error]\n");
-		printf("\t\t        Login Error");
+		printf("\t\t            [Error]\n");
+		printf("\t\t          Login Error");
 		pause;
 
 		cls;
 		return;
 	}
+	Create_Cardname();
+	cm.Card_num = rand() % 100000 + 1;
 
 	FILE *Card;
 	Card = fopen(cm.card_name, "wt");
 
-	fprintf(Card, "%ld ", cm.cash);
+	fprintf(Card, "%lld ", mm.Bank_cash);
 	fprintf(Card, "%d", cm.Card_num);
 
 	if (Card == NULL){
@@ -559,8 +553,8 @@ void Get_card(){
 		return;
 	}
 
-	printf("\t\t        [Success]\n");
-	printf("\t\t   Create Card Success");
+	printf("\t\t          [Success]\n");
+	printf("\t\t     Create Card Success");
 	
 	fclose(Card);
 	pause;
@@ -593,8 +587,8 @@ void Put_card(){
 	else{
 		cls;
 
-		printf("\t\t          [Error]\n");
-		printf("\t\t        Login Error");
+		printf("\t\t            [Error]\n");
+		printf("\t\t          Login Error");
 		pause;
 
 		cls;
@@ -619,22 +613,22 @@ void Put_card(){
 		return;
 	}
 
-	fscanf(Card, "%ld %d", &cm.cash, &cm.Card_num);
+	fscanf(Card, "%ld %d", &mm.Bank_cash, &cm.Card_num);
 
 	fclose(Card);
 	cls;
 	
-	printf("\t\t       [Success]\n");
-	printf("\t\t   Bring Info Success");
+	printf("\t\t          [Success]\n");
+	printf("\t\t      Bring Info Success");
 	pause;
 	
 	cls;
 
 	while (1){
 		if (_kbhit){
-			printf("\t\t       [Choice]\n");
-			printf("\t\t    Check Card Info\n");
-			printf("\t\t   (Y) Yes   (N) No");
+			printf("\t\t           [Choice]\n");
+			printf("\t\t        Check Card Info\n");
+			printf("\t\t       (Y) Yes   (N) No");
 			cm.cc = _getch();
 
 			switch (cm.cc){
@@ -670,9 +664,9 @@ void reset(){
 	
 	while (1){
 		if (_kbhit){
-			printf("\t\t       [WARNING]\n");
-			printf("\t\t    Reset All Info\n");
-			printf("\t\t   (Y) Yes   (N) No");
+			printf("\t\t          [WARNING]\n");
+			printf("\t\t        Reset All Info\n");
+			printf("\t\t       (Y) Yes   (N) No");
 			ch = _getch();
 
 			switch (ch){
@@ -713,7 +707,7 @@ void reset(){
 //------------------------Check------------------------
 void check(){
 
-	if (m.save == 0){ //아이디를 저장하지 않았을때 
+	if (m.save == 0){
 		printf("\t\t     [Check Login Page]\n");
 		printf("\t\t        Input ID: ");
 		scanf("%s", input_ID);
@@ -727,22 +721,22 @@ void check(){
 		}
 
 		else{
-			printf("\t\t          [Error]\n");
-			printf("\t\t        Login Error");
+			printf("\t\t            [Error]\n");
+			printf("\t\t          Login Error");
 			pause;
 
 			cls;
 			return;
 		}
 	}
-	else{ //아이디를 저장했을때 
+	else{
 	show:
 		if (cm.c == 0){
 			printf("\t\t          [Result]\n");
 			printf("\t\t         Name: %s\n", m.name);
 			printf("\t\t         ID: %s\n", m.ID);
 			printf("\t\t         PW: %s\n", m.PW);
-			printf("\t\t         Bank Money: %lld\n", mm.Bank_cash);
+			printf("\t\t         Your Cash: %ld", cm.cash);
 		}
 		else if (cm.c == 1){
 			printf("\t\t          [Result]\n");
@@ -750,12 +744,11 @@ void check(){
 			printf("\t\t         ID: %s\n", m.ID);
 			printf("\t\t         PW: %s\n", m.PW);
 			printf("\t\t         Card number: %d\n", cm.Card_num); 
+			printf("\t\t         Your Cash: %ld\n", cm.cash);
 			printf("\t\t         Bank Money: %lld\n", mm.Bank_cash);
-			printf("\t\t         Your Cash: %ld", cm.cash);
 		}
 
 		pause;
-
 		cls;
 		return;
 	}
@@ -767,6 +760,5 @@ void choice_error(){
 	printf("\t\t          [Error]\n");
 	printf("\t\t        Wrong Choice");
 	pause;
-
 	cls;
 }
