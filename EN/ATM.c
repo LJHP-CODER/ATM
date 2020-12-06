@@ -182,9 +182,7 @@ void signup(){
 	cls;
 	printf("\t\t       [ATM Sign up Page]\n");
 	printf("\t\t       Input Cash: ");
-	scanf("%d", &m.input_cash);
-
-	cm.cash = m.input_cash;
+	scanf("%d", &m.cash);
 
 	cls;
 	if (m.name == "" || m.ID == "" || m.PW == ""){
@@ -208,11 +206,11 @@ void deposit(){
 	if (m.save == 1){
 	plus:
 		printf("\t\t       [Desposit Page]\n");
-		printf("\t\t       Cash: %d\n", m.input_cash);
+		printf("\t\t       Cash: %d\n", m.cash);
 		printf("\t\t       Input Cash: ");
 		scanf("%d", &mm.input_money);
 
-		if (mm.input_money > m.input_cash){
+		if (mm.input_money > m.cash){
 			cls;
 
 			printf("\t\t           [Error]\n");
@@ -223,7 +221,7 @@ void deposit(){
 			return;
 		}
 
-		m.input_cash -= mm.input_money; 
+		m.cash -= mm.input_money; 
 		mm.Bank_cash += mm.input_money; 
 
 		cls;
@@ -279,9 +277,9 @@ void withdraw(){
 			return;
 		}
 		mm.Bank_cash -= mm.input_money;
-		m.input_cash += mm.input_money; 
+		m.cash += mm.input_money; 
 
-		printf("\t\t       [Your Cash]: %d\n", m.input_cash);
+		printf("\t\t       [Your Cash]: %d\n", m.cash);
 		pause;
 
 		cls;
@@ -347,7 +345,7 @@ void ID_load(){
 
 		else{
 			int tmp;
-			fscanf(f, "%s %s %s %lld %d", m.name, m.ID, m.PW, &cm.cash, &m.save);
+			fscanf(f, "%s %s %s %lld %d", m.name, m.ID, m.PW, &m.cash, &m.save);
 			fclose(f);
 
 			cls;
@@ -379,7 +377,7 @@ void ID_load(){
 				m.name[20] = "";
 				m.ID[20] = "";
 				m.PW[20] = "";
-				m.input_cash = 0;
+				m.cash = 0;
 				m.save = 0;
 				mm.Bank_cash = 0;
 
@@ -391,38 +389,47 @@ void ID_load(){
 }
 
 //------------------------Remember_data------------------------
-void Remember_data(){
+void Remember_data() {
 
-		printf("\t\t  [Remember_data Login Page]\n");
-		printf("\t\t         Input ID: ");
-		scanf("%s", input_ID);
+	printf("\t\t  [Remember_data Login Page]\n");
+	printf("\t\t         Input ID: ");
+	scanf("%s", input_ID);
 
-		printf("\t\t         Input PW: ");
-		scanf("%s", input_PW);
+	printf("\t\t         Input PW: ");
+	scanf("%s", input_PW);
 
-		cls;
-		if (!strcmp(input_ID, m.ID) && !strcmp(input_PW, m.PW)){
-			save();
-		}
+	cls;
+	if (!strcmp(input_ID, m.ID) && !strcmp(input_PW, m.PW)) {
+		input_ID[20] = "";
+		input_PW[20] = "";
 
-		else{
-			printf("\t\t            [Error]\n");
-			printf("\t\t          Login Error");
+		FILE *fp;
+
+		fp = fopen(m.name, "wt");
+		if (fp == NULL) {
+
+			printf("\t\t           [Error]\n");
+			printf("\t\t        Save Data Error");
+
 			pause;
-
 			cls;
+
 			return;
 		}
-}
-//------------------------Save------------------------
-void save(){
-	FILE *fp;
 
-	fp = fopen(m.name, "wt");
-	if (fp == NULL){
 
-		printf("\t\t           [Error]\n");
-		printf("\t\t        Save Data Error");
+		fprintf(fp, "%s ", m.name);
+		fprintf(fp, "%s ", m.ID);
+		fprintf(fp, "%s ", m.PW);
+		fprintf(fp, "%ld ", m.cash);
+		fprintf(fp, "%d", m.save);
+
+		fclose(fp);
+
+		chmod(m.name, 000);
+
+		printf("\t\t          [Save Data]\n");
+		printf("\t\t       Save Data Success");
 
 		pause;
 		cls;
@@ -430,26 +437,15 @@ void save(){
 		return;
 	}
 
+	else {
+		printf("\t\t            [Error]\n");
+		printf("\t\t          Login Error");
+		pause;
 
-	fprintf(fp, "%s ", m.name);
-	fprintf(fp, "%s ", m.ID);
-	fprintf(fp, "%s ", m.PW);
-	fprintf(fp, "%ld ", cm.cash);
-	fprintf(fp, "%d", m.save);
-
-	fclose(fp);
-
-	chmod(m.name, 000);
-
-	printf("\t\t          [Save Data]\n");
-	printf("\t\t       Save Data Success");
-
-	pause;
-	cls;
-
-	return;
+		cls;
+		return;
+	}
 }
-
 //------------------------Add_cash------------------------
 void add_cash(){
 
@@ -470,10 +466,10 @@ void add_cash(){
 			cls;
 			return;
 		}
-		cm.cash += mm.input_add_cash;
+		m.cash += mm.input_add_cash;
 
 		cls;
-		printf("\t\t       [Your Cash]: %d", m.input_cash);
+		printf("\t\t       [Your Cash]: %d", m.cash);
 
 		pause;
 		cls;
@@ -521,8 +517,33 @@ void Get_card(){
 
 		input_ID[20] = "";
 		input_PW[20] = "";
+		Create_Cardname();
+		cm.Card_num = rand() % 100000 + 1;
+
+		FILE *Card;
+		Card = fopen(cm.card_name, "wt");
+
+		fprintf(Card, "%lld ", mm.Bank_cash);
+		fprintf(Card, "%d", cm.Card_num);
+
+		if (Card == NULL) {
+			printf("\t\t          [Error]\n");
+			printf("\t\t     Create Card Error");
+
+			pause;
+
+			cls;
+			return;
+		}
+
+		printf("\t\t          [Success]\n");
+		printf("\t\t     Create Card Success");
+
+		fclose(Card);
+		pause;
 
 		cls;
+		return;
 	}
 	
 	else{
@@ -534,33 +555,7 @@ void Get_card(){
 		cls;
 		return;
 	}
-	Create_Cardname();
-	cm.Card_num = rand() % 100000 + 1;
-
-	FILE *Card;
-	Card = fopen(cm.card_name, "wt");
-
-	fprintf(Card, "%lld ", mm.Bank_cash);
-	fprintf(Card, "%d", cm.Card_num);
-
-	if (Card == NULL){
-		printf("\t\t          [Error]\n");
-		printf("\t\t     Create Card Error");
-
-		pause;
-
-		cls;
-		return;
-	}
-
-	printf("\t\t          [Success]\n");
-	printf("\t\t     Create Card Success");
 	
-	fclose(Card);
-	pause;
-
-	cls;
-	return;
 
 }
 
@@ -677,7 +672,6 @@ void reset(){
 				m.name[20] = "";
 				m.save = "";
 				m.saveID = 0;
-				m.input_cash = "";
 
 				mm.Bank_cash = 0;
 				mm.input_add_cash = 0;
@@ -686,7 +680,7 @@ void reset(){
 				cm.c = 0;
 				cm.card_name[10] = "";
 				cm.Card_num = 0;
-				cm.cash = 0;
+				m.cash = 0;
 				cm.cc = "";
 
 				return;
@@ -736,7 +730,7 @@ void check(){
 			printf("\t\t         Name: %s\n", m.name);
 			printf("\t\t         ID: %s\n", m.ID);
 			printf("\t\t         PW: %s\n", m.PW);
-			printf("\t\t         Your Cash: %ld", cm.cash);
+			printf("\t\t         Your Cash: %ld", m.cash);
 		}
 		else if (cm.c == 1){
 			printf("\t\t          [Result]\n");
@@ -744,7 +738,7 @@ void check(){
 			printf("\t\t         ID: %s\n", m.ID);
 			printf("\t\t         PW: %s\n", m.PW);
 			printf("\t\t         Card number: %d\n", cm.Card_num); 
-			printf("\t\t         Your Cash: %ld\n", cm.cash);
+			printf("\t\t         Your Cash: %ld\n", m.cash);
 			printf("\t\t         Bank Money: %lld\n", mm.Bank_cash);
 		}
 

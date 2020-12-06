@@ -17,14 +17,13 @@ struct member {
 	char name[20];
 	char ID[20];
 	char PW[20];
-	int input_cash;
+	int long cash;
 	char saveID;
 	int save;
 };
 
 struct card_manage {
 	char card_name[10];
-	int long cash;
 	int Card_num;
 	char cc;
 	int c;
@@ -44,7 +43,6 @@ void deposit();
 void withdraw();
 void ID_load();
 void Remember_data();
-void save();
 void add_cash();
 void Get_card();
 void Put_card();
